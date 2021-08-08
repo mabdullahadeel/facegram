@@ -34,7 +34,7 @@
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [8000, 7000, 8025, 5555],
+  "forwardPorts": [8000, 7000, 8025, 5555, 5432],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "pip install --user -r requirements.txt",
