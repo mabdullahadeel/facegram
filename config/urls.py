@@ -25,7 +25,8 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     # JWT AUTH
-    path("apiauth/", include('djoser.urls')),
+    path("apiauth/", include("djoser.urls")),
+    path("apiauth/", include("djoser.urls.jwt")),
 ]
 
 if settings.DEBUG:
