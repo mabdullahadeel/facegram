@@ -30,7 +30,7 @@ RUN apt-get upgrade -y
 RUN apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash
 RUN apt-get install -y nodejs
-CMD ["npm", "install", "yarn"]
+RUN npm install -g yarn
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .

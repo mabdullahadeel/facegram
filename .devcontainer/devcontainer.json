@@ -32,6 +32,8 @@
     "mtxr.sqltools",
     "mtxr.sqltools-driver-pg",
     "github.copilot",
+    "ms-vscode.vscode-typescript-next",
+    "visualstudioexptteam.vscodeintellicode",
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
