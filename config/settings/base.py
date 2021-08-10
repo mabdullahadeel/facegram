@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import datetime
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # facegram/
@@ -72,7 +73,8 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    'rest_framework_simplejwt',
+    "rest_framework_simplejwt",
+    "djoser",
 ]
 
 LOCAL_APPS = [
@@ -292,6 +294,12 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
+
+SIMPLE_JWT = {
+   "AUTH_HEADER_TYPES": ('JWT',),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
+}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
