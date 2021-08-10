@@ -27,6 +27,8 @@ urlpatterns += [
     # JWT AUTH
     path("apiauth/", include("djoser.urls")),
     path("apiauth/", include("djoser.urls.jwt")),
+    path("oauth/", include("social_django.urls", namespace='social')),    # need to decide if required
+    path("oauth/", include("djoser.social.urls")),                        # Socail Authentication
 ]
 
 if settings.DEBUG:
