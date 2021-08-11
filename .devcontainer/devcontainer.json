@@ -34,6 +34,7 @@
     "github.copilot",
     "ms-vscode.vscode-typescript-next",
     "visualstudioexptteam.vscodeintellicode",
+    "esbenp.prettier-vscode",
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.

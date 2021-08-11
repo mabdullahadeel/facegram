@@ -298,7 +298,7 @@ ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
 
 SIMPLE_JWT = {
-   "AUTH_HEADER_TYPES": ('JWT',),
+   "AUTH_HEADER_TYPES": ('JWT','Bearer'),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
 }
@@ -322,8 +322,14 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 # Social Authentication
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_JSONFIELD_CUSTOM = 'django.db.models.JSONField'
-
+SOCIAL_AUTH_JSONFIELD_CUSTOM = "django.db.models.JSONField"
 # GitHub Social Authentication
-# SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
-# SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+
+# Djoser Setup
+DJOSER = {
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
+    'http://localhost:3000/login?status=success',
+    ]
+}
