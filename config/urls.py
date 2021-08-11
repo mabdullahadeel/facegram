@@ -23,12 +23,10 @@ if settings.DEBUG:
 urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
-    # DRF auth token
     # JWT AUTH
     path("api/auth/", include("djoser.urls")),
     path("api/auth/", include("djoser.urls.jwt")),
-    #path("oauth/", include("social_django.urls", namespace='social')),    # need to decide if required
-    path("oauth/", include("djoser.social.urls")),                        # Socail Authentication
+    path("api/oauth/", include("djoser.social.urls")),                        # Socail Authentication
 ]
 
 if settings.DEBUG:
