@@ -66,14 +66,12 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "django_celery_beat",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "social_django",
     "djoser",
 ]
@@ -95,7 +93,6 @@ MIGRATION_MODULES = {"sites": "facegram.contrib.sites.migrations"}
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    # "allauth.account.auth_backends.AuthenticationBackend",
     "social_core.backends.github.GithubOAuth2",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
@@ -129,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "social_django.middleware.SocialAuthExceptionMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -190,6 +188,8 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "facegram.utils.context_processors.settings_context",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     }
@@ -301,6 +301,9 @@ SIMPLE_JWT = {
    "AUTH_HEADER_TYPES": ('JWT','Bearer'),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
+    "AUTH_TOKEN_CLASSES": (
+        "rest_framework_simplejwt.tokens.AccessToken",
+    )
 }
 
 # django-rest-framework
@@ -320,16 +323,24 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+# Djoser Setup
+DJOSER = {
+    "LOGIN_FIELD": "username",
+    "SERIALIZERS": {
+        "user_create": "facegram.users.api.serializers.UserSerializer",
+        "user": "facegram.users.api.serializers.UserSerializer",
+    },
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
+        "http://localhost:3000/auth/success/"
+    ],
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:3000/auth/success/",]
+}
+
 # Social Authentication
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_JSONFIELD_CUSTOM = "django.db.models.JSONField"
 # GitHub Social Authentication
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
 SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
 SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
-
-# Djoser Setup
-DJOSER = {
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
-    'http://localhost:3000/login?status=success',
-    ]
-}

@@ -22,13 +22,13 @@ function Login() {
     setIsLoading(true);
     axios
       .get(
-        "http://localhost:8000/api/oauth/o/github/?redirect_uri=http://localhost:3000/login?status=success"
+        "http://localhost:8000/api/oauth/o/github/?redirect_uri=http://localhost:3000/auth/success/"
       )
       .then((response) => {
         const data: RequestIntiateAuthRes = response.data;
         window.location.replace(data.authorization_url);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err.message))
       .finally(() => {
         setIsLoading(false);
       });
