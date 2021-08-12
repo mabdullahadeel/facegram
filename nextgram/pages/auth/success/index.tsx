@@ -21,21 +21,18 @@ function LoginSuccess() {
       state: state,
     };
 
-    const formBody = Object.keys(details)
-      .map(
-        (key) =>
-          encodeURIComponent(key) + "=" + encodeURIComponent(details[key])
-      )
-      .join("&");
+    const formBody : string = `code=${encodeURIComponent(details?.code || "")}&state=${encodeURIComponent(details?.state || "")}`
 
-    console.log(formBody);
 
-    // axios
-    //   .post(`http:localhost:8000/api/oauth/o/github/?${formBody}`, config)
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => console.log(err));
+    const url = `http:localhost:8000/api/oauth/o/github/?${formBody}`
+    console.log(formBody, " url", url);
+
+    axios
+      .post(url, config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return <div>Congratulations! Login was successful</div>;
