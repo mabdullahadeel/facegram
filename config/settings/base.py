@@ -334,7 +334,6 @@ DJOSER = {
         "http://localhost:3000/auth/success/"
     ],
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:3000/auth/success/",]
 }
 
 # Social Authentication

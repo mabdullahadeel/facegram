@@ -8,30 +8,34 @@ function LoginSuccess() {
     const code = query.get("code");
     const state = query.get("state");
 
-    console.log(code, state);
-
-    const config = {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    };
-
     const details = {
       code: code,
       state: state,
     };
 
-    const formBody : string = `code=${encodeURIComponent(details?.code || "")}&state=${encodeURIComponent(details?.state || "")}`
+    const formBody: string = `code=${encodeURIComponent(
+      details?.code || ""
+    )}&state=${encodeURIComponent(details?.state || "")}`;
 
-
-    const url = `http:localhost:8000/api/oauth/o/github/?${formBody}`
+    const url = `http://127.0.0.1:8000/api/oauth/o/github/?${formBody}`;
     console.log(formBody, " url", url);
 
-    axios
-      .post(url, config)
-      .then((response) => {
-        console.log(response);
-      })
+    // axios
+    //   .post(url, config)
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch((err) => console.log(err));
+    axios({
+      method: "post",
+      url: url,
+      data: details,
+      // headers: config.headers,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+      .then((response) => console.log(response))
       .catch((err) => console.log(err));
   }, []);
 

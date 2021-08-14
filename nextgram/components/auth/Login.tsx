@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlineGithub } from "react-icons/ai";
 import axios, { AxiosResponse } from "axios";
+import { useRouter } from "next/router";
 
 interface RequestIntiateAuthRes {
   authorization_url: string;
@@ -17,16 +18,17 @@ function Login() {
   const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue("gray.100", "gray.700");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const getGitHubAuthURL = () => {
     setIsLoading(true);
     axios
       .get(
-        "http://localhost:8000/api/oauth/o/github/?redirect_uri=http://localhost:3000/auth/success/"
+        "http://127.0.0.1:8000/api/oauth/o/github/?redirect_uri=http://localhost:3000/auth/success/"
       )
       .then((response) => {
         const data: RequestIntiateAuthRes = response.data;
-        window.location.replace(data.authorization_url);
+        router.push(data.authorization_url);
       })
       .catch((err) => console.log(err.message))
       .finally(() => {
