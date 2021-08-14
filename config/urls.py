@@ -24,9 +24,9 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
     # JWT AUTH
-    path("api/auth/", include("djoser.urls")),
-    path("api/auth/", include("djoser.urls.jwt")),
-    path("api/oauth/", include("djoser.social.urls")),                        # Socail Authentication
+    # path("api/auth/", include("djoser.urls")),
+    # path("api/auth/", include("djoser.urls.jwt")),
+    # path("api/oauth/", include("djoser.social.urls")),                        # Socail Authentication
 ]
 
 if settings.DEBUG:
