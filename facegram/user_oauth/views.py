@@ -27,3 +27,8 @@ class GithubLogin(SocialLoginView, APIView):
         authorization_uri = get_github_authorization_url(request=request, redirect_uri=redirect_uri)
         return Response(data= {"authorization_uri": authorization_uri}, status=status.HTTP_200_OK)
 
+    
+    def post(self, request, *args, **kwargs):
+        print("Posting the data to correct url")
+        return super().post(request, *args, **kwargs)
+
