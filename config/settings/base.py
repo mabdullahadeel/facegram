@@ -67,9 +67,20 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "crispy_forms",
     "django_celery_beat",
+    # -------- #
     "rest_framework",
     "rest_framework.authtoken",
+    "dj_rest_auth",
     "corsheaders",
+    # -------- #
+    "allauth",
+    "allauth.account",
+    "dj_rest_auth.registration",
+    # -------- #
+    "allauth.socialaccount",
+    # "allauth.socialaccount.providers.facebook",
+    # "allauth.socialaccount.providers.twitter",
+    "allauth.socialaccount.providers.github",
 ]
 
 LOCAL_APPS = [
@@ -297,9 +308,20 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "allauth.account.auth_backends.AuthenticationBackend",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
+
+SIMPLE_JWT = {
+   "AUTH_HEADER_TYPES": ('JWT','Bearer'),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
+    "AUTH_TOKEN_CLASSES": (
+        "rest_framework_simplejwt.tokens.AccessToken",
+    )
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -307,8 +329,18 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+# DJ_REST_AUTH
+
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
+}
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'token'
+JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
 
 # GitHub Social Authentication
 SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
 SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
 SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"

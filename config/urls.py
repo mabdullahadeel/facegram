@@ -24,9 +24,10 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
     # JWT AUTH
-    # path("api/auth/", include("djoser.urls")),
-    # path("api/auth/", include("djoser.urls.jwt")),
-    # path("api/oauth/", include("djoser.social.urls")),                        # Socail Authentication
+    path("api/oauth/", include("dj_rest_auth.urls")),
+    path("api/oauth/registration/", include("dj_rest_auth.registration.urls")),
+    path("api/oauth/o/", include("facegram.users.urls", namespace="users")),
+    # Socail Authentication
 ]
 
 if settings.DEBUG:
