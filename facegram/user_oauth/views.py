@@ -5,6 +5,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from .o_auth_utils import get_github_authorization_url
 
 
 class GithubLogin(SocialLoginView, APIView):
@@ -12,19 +13,17 @@ class GithubLogin(SocialLoginView, APIView):
     callback_url = settings.SOCIAL_AUTH_GITHUB_CALLBACK
     client_class = OAuth2Client
 
-    # https://github.com/login/oauth/authorize?client_id={}&redirect_uri={}&state={}&response_type=code&scope=user:email,read:user
-
 
     def get(self, request, *args, **kwargs):
         """
             returns an authorization_uri to
-            redirect to the user along with the state
-            to keep track of the state of the login.
+            redirect the user along with the
+            state to track CSRF
         """
         redirect_uri = request.GET.get('redirect_uri', None)
         if not redirect_uri or not redirect_uri in settings.SOCIAL_AUTH_ALLOWED_REDIRECT_URIS:
             return Response(data= {"error": "Invalid URI"}, status=status.HTTP_400_BAD_REQUEST)
         
-        # request.META.get("REMOTE_ADDR")
-        return Response(data= {"greet": "Hello there"}, status=status.HTTP_200_OK)
+        authorization_uri = get_github_authorization_url(request=request, redirect_uri=redirect_uri)
+        return Response(data= {"authorization_uri": authorization_uri}, status=status.HTTP_200_OK)
 
