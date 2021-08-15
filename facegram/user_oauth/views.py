@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .o_auth_utils import get_github_authorization_url
+from .models import OAuthScopes
 
 
 class GithubLogin(SocialLoginView, APIView):
@@ -29,6 +30,24 @@ class GithubLogin(SocialLoginView, APIView):
 
     
     def post(self, request, *args, **kwargs):
-        print("Posting the data to correct url")
+        state = request.data.get('state', None)
+        print(state)
+        if not state:
+            return Response(data= {"error": "Invalid State"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        matching_state = OAuthScopes.objects.filter(scope=state)
+        if not matching_state:
+            return Response(data= {"error": "Invalid State"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        oauth_scopes = matching_state[0]
+        if oauth_scopes.ip != request.META.get('REMOTE_ADDR'):
+            return Response(data= {"error": "Invalid IP"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        else:
+            oauth_scopes.delete()
+        
         return super().post(request, *args, **kwargs)
+
+
+
+
 
