@@ -24,9 +24,9 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
     # JWT AUTH
-    path("api/oauth/", include("dj_rest_auth.urls")),
-    path("api/oauth/registration/", include("dj_rest_auth.registration.urls")),
-    path("api/oauth/o/", include("facegram.users.urls", namespace="users")),
+    path("api/auth/", include("dj_rest_auth.urls")),
+    path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
+    path("api/oauth/o/", include("facegram.user_oauth.urls", namespace="user_oauth")),
     # Socail Authentication
 ]
 

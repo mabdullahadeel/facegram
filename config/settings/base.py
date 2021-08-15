@@ -78,13 +78,12 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
     # -------- #
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.facebook",
-    # "allauth.socialaccount.providers.twitter",
     "allauth.socialaccount.providers.github",
 ]
 
 LOCAL_APPS = [
     "facegram.users.apps.UsersConfig",
+    "facegram.user_oauth.apps.UserOauthConfig"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -301,6 +300,30 @@ ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
 
+# Loading Social App Credientials
+# GitHub Social Authentication
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
+SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
+
+
+# Custom Social Auth Configs used in user_outh
+SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
+    SOCIAL_AUTH_GITHUB_CALLBACK
+]
+
+
+# Social Authentication Settiing for All Auth
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': SOCIAL_AUTH_GITHUB_KEY,
+            'secret': SOCIAL_AUTH_GITHUB_SECRET,
+        }
+    }
+}
+
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
@@ -309,9 +332,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
         "allauth.account.auth_backends.AuthenticationBackend",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
     ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
@@ -319,13 +343,17 @@ SIMPLE_JWT = {
    "AUTH_HEADER_TYPES": ('JWT','Bearer'),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
-    "AUTH_TOKEN_CLASSES": (
-        "rest_framework_simplejwt.tokens.AccessToken",
-    )
+    # "AUTH_TOKEN_CLASSES": (
+    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
+    # )
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
 # Your stuff...
 # ------------------------------------------------------------------------------
 
@@ -335,12 +363,9 @@ REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
 }
 
+REST_SESSION_LOGIN = False
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'token'
-JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
+JWT_AUTH_COOKIE = "token"
+JWT_AUTH_REFRESH_COOKIE = "refresh_token"
+# JWT_AUTH_SECURE = True
 
-# GitHub Social Authentication
-SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
-SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
-SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
-SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
