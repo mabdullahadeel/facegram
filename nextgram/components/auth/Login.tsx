@@ -11,7 +11,7 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 
 interface RequestIntiateAuthRes {
-  authorization_url: string;
+  authorization_uri: string;
 }
 
 function Login() {
@@ -28,7 +28,7 @@ function Login() {
       )
       .then((response) => {
         const data: RequestIntiateAuthRes = response.data;
-        router.push(data.authorization_url);
+        router.push(data.authorization_uri);
       })
       .catch((err) => console.log(err.message))
       .finally(() => {

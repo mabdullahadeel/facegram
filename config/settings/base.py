@@ -298,6 +298,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 # Loading Social App Credientials
 # GitHub Social Authentication
