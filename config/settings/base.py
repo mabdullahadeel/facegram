@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import datetime
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # facegram/
@@ -65,18 +66,24 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "django_celery_beat",
+    # -------- #
     "rest_framework",
     "rest_framework.authtoken",
+    "dj_rest_auth",
     "corsheaders",
+    # -------- #
+    "allauth",
+    "allauth.account",
+    "dj_rest_auth.registration",
+    # -------- #
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
 ]
 
 LOCAL_APPS = [
     "facegram.users.apps.UsersConfig",
-    # Your stuff: custom apps go here
+    "facegram.user_oauth.apps.UserOauthConfig"
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -291,6 +298,31 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+
+# Loading Social App Credientials
+# GitHub Social Authentication
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
+SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
+
+
+# Custom Social Auth Configs used in user_outh
+SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
+    SOCIAL_AUTH_GITHUB_CALLBACK
+]
+
+
+# Social Authentication Settiing for All Auth
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': SOCIAL_AUTH_GITHUB_KEY,
+            'secret': SOCIAL_AUTH_GITHUB_SECRET,
+        }
+    }
+}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -299,11 +331,41 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "allauth.account.auth_backends.AuthenticationBackend",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
     ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
+
+SIMPLE_JWT = {
+   "AUTH_HEADER_TYPES": ('JWT','Bearer'),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
+    # "AUTH_TOKEN_CLASSES": (
+    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
+    # )
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# DJ_REST_AUTH
+
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
+}
+
+REST_SESSION_LOGIN = False
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = "token"
+JWT_AUTH_REFRESH_COOKIE = "refresh_token"
+# JWT_AUTH_SECURE = True
+

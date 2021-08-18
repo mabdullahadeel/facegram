@@ -2,6 +2,11 @@
 # ------------------------------------------------------------------------------
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
+
+# postgres
+
+DATABASE_URL=postgresql://debug:debug@postgres:5432/facegram
+CELERY_BROKER_URL=redis://redis:6379/0
 # Redis
 # ------------------------------------------------------------------------------
 REDIS_URL=redis://redis:6379/0

@@ -17,6 +17,21 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
   libpq-dev
 
+# Installing git
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y git
+
+
+# Installing nodejs
+ENV NODE_VERSION=14
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash
+RUN apt-get install -y nodejs
+RUN npm install -g yarn
+
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
 
