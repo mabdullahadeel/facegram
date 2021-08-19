@@ -317,6 +317,7 @@ SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
 
 
 # Social Authentication Settiing for All Auth
+SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'APP': {
