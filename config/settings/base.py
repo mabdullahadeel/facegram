@@ -83,7 +83,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "facegram.users.apps.UsersConfig",
-    "facegram.user_oauth.apps.UserOauthConfig"
+    "facegram.user_oauth.apps.UserOauthConfig",
+    "facegram.profiles.apps.ProfilesConfig",
+    "facegram.extras.apps.ExtrasConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
