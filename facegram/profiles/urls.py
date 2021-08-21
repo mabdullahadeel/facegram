@@ -8,7 +8,7 @@ router = SimpleRouter()
 # router.register('me', views.UserProfileAPIView)
 
 urlpatterns = [
-    path("<str:username>", views.UserProfileAPIView.as_view(), name="my_profile"),
+    path("<str:username>", views.RetrieveUserProfileAPI.as_view(), name="my_profile"),
 ]
 
 urlpatterns += router.urls

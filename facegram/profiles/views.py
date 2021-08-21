@@ -1,18 +1,20 @@
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveAPIView
 from .models import Profile
-from .serializers.v1.serializers import ProfileSerializerV1
+from rest_framework.permissions import AllowAny
+from .serializers.v1.serializers import RetrieveUserProfileSerializerV1
 from facegram.mixins.serializer_version_mixin import SerializerVersionMixin
 
 
-class UserProfileAPIView(SerializerVersionMixin, RetrieveUpdateAPIView):
+class RetrieveUserProfileAPI(SerializerVersionMixin, RetrieveAPIView):
     """
-        API endpoint that allows user prifiles to be viewed or edited.
+        Open API endpoint to see UserProfile details
         NOTE: No need to specify serializer_class as taken
             care of in the mixin class.
     """
     version_map = {
-        'v1': ProfileSerializerV1,
+        'v1': RetrieveUserProfileSerializerV1,
     }
+    permission_classes = [AllowAny]
     lookup_field = 'user__username'
     lookup_url_kwarg = 'username'
 
