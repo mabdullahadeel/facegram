@@ -22,13 +22,12 @@ if settings.DEBUG:
 
 # API URLS
 urlpatterns += [
-    # API base url
-    path("api/", include("config.api_router")),
     # JWT AUTH
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
     path("api/oauth/o/", include("facegram.user_oauth.urls", namespace="user_oauth")),
-    # Socail Authentication
+    # API base url
+    path("api/", include("config.api_router")),
 ]
 
 if settings.DEBUG:

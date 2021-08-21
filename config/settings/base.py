@@ -302,6 +302,12 @@ ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
+
+# API versioning
+# ------------------------------------------------------------------------------
+REST_API_V1 = "v1"
+DEFAULT_VERSION = REST_API_V1
+ALLOWED_VERSIONS = [REST_API_V1,]
 # Loading Social App Credientials
 # GitHub Social Authentication
 SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
@@ -310,7 +316,7 @@ SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
 SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
 
 
-# Custom Social Auth Configs used in user_outh
+# Custom Social Auth Configs used in user_oauth
 SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
     SOCIAL_AUTH_GITHUB_CALLBACK
 ]
@@ -335,11 +341,11 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
         "allauth.account.auth_backends.AuthenticationBackend",
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
     ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }
 
 SIMPLE_JWT = {
