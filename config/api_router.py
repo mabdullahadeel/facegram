@@ -9,5 +9,5 @@ user_api_router = DefaultRouter()
 user_api_router.registry.extend(users_router.registry)
 
 urlpatterns = [
-    path(f'{settings.REST_API_V1}/users', include((user_api_router.urls, 'users'), namespace='v1')),
+    path(f'{settings.REST_API_V1}/users/c/', include((user_api_router.urls, 'users_api'), namespace='v1')),
 ]
