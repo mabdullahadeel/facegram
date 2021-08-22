@@ -27,7 +27,7 @@ urlpatterns += [
     path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
     path("api/oauth/o/", include("facegram.user_oauth.urls", namespace="user_oauth")),
     # API base url
-    path("api/", include("config.api_router")),
+    path(f"api/{settings.REST_API_V1}", include(("config.api_router", "v1"), namespace="v1")),
 ]
 
 if settings.DEBUG:
