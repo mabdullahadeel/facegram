@@ -31,7 +31,6 @@ class GithubLogin(SocialLoginView, APIView):
     
     def post(self, request, *args, **kwargs):
         state = request.data.get('state', None)
-        print(state)
         if not state:
             return Response(data= {"error": "Invalid State"}, status=status.HTTP_400_BAD_REQUEST)
         

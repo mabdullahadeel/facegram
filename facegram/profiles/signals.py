@@ -11,14 +11,15 @@ def user_logged_in_callback(sender, instance, **kwargs):
         Create Profile instance when user signs up
     """
     if instance.provider == "github":
-        profile, created = Profile.objects.get_or_create(
+        profile = Profile.objects.create(
             user=instance.user,
             location=instance.extra_data.get("location"),
         )
-        if created:
-            print("requesting the image from github")
-            profile.save()
-            get_auth_provider_profile_pic(
-                username=instance.user.username,
-                pic_url=instance.extra_data.get("avatar_url"),
-                provider="github")
+        profile.save()
+        # if created:
+        #     print("requesting the image from github")
+        #     profile.save()
+        #     # get_auth_provider_profile_pic(
+        #     #     username=instance.user.username,
+        #     #     pic_url=instance.extra_data.get("avatar_url"),
+        #     #     provider="github")
