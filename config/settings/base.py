@@ -377,4 +377,3 @@ REST_USE_JWT = True
 JWT_AUTH_COOKIE = "token"
 JWT_AUTH_REFRESH_COOKIE = "refresh_token"
 # JWT_AUTH_SECURE = True
-
