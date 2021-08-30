@@ -15,11 +15,9 @@ def user_logged_in_callback(sender, instance, **kwargs):
             user=instance.user,
             location=instance.extra_data.get("location"),
         )
-        profile.save()
         if created:
-            print("requesting the image from github")
             profile.save()
-            get_auth_provider_profile_pic(
+            get_auth_provider_profile_pic.delay(
                 username=instance.user.username,
                 pic_url=instance.extra_data.get("avatar_url"),
                 provider="github")

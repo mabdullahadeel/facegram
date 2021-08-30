@@ -10,9 +10,3 @@ urlpatterns = [
     path('users/c/', include('facegram.users.urls', namespace='users_api')),
     path('user-profile/', include('facegram.profiles.urls', namespace='user_profile_api')),
 ]
-
-
-# urlpatterns = [
-#     path('users/c/', include((user_api_router.urls, 'users_api'), namespace='users_api')),
-#     path('user-profile/', include('facegram.profiles.urls', namespace='user_profile_api')),
-# ]

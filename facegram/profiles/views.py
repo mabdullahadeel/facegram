@@ -25,7 +25,7 @@ class RetrieveUserProfileAPI(SerializerVersionMixin, RetrieveAPIView):
     lookup_url_kwarg = 'username'
 
     def get_queryset(self):
-        username = self.request.user.username
+        username = self.kwargs.get(self.lookup_url_kwarg)
         return Profile.objects.filter(user__username=username)
 
 
