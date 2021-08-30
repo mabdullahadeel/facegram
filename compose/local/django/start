@@ -7,4 +7,6 @@ set -o nounset
 
 python manage.py migrate
 echo "Django migrations done"
+echo "Collecting static files"
+python manage.py collectstatic --noinput
 uvicorn config.asgi:application --host 0.0.0.0 --reload --reload-dir ./facegram --reload-dir ./config

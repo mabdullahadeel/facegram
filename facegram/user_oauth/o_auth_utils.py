@@ -23,8 +23,6 @@ def get_github_authorization_url(request, redirect_uri):
     github_base_url = "https://github.com/login/oauth/authorize"
     state = get_random_string(length=20)
 
-    # https://github.com/login/oauth/authorize?client_id={}&redirect_uri={}&state=lTxdtfUG2dqkbWORs4prspjxuqhwpBLJ&response_type=code&scope=user:email,read:user
-
     authorization_uri = "%s?client_id=%s&redirect_uri=%s&state=%s&response_type=%s&scope=%s" % (
         github_base_url,
         settings.SOCIAL_AUTH_GITHUB_KEY,

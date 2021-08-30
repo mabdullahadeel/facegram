@@ -83,7 +83,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "facegram.users.apps.UsersConfig",
-    "facegram.user_oauth.apps.UserOauthConfig"
+    "facegram.user_oauth.apps.UserOauthConfig",
+    "facegram.profiles.apps.ProfilesConfig",
+    "facegram.extras.apps.ExtrasConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -146,12 +148,13 @@ MIDDLEWARE = [
 
 # STATIC
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [str(APPS_DIR / "static")]
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+# serving the static file from a single source folder
+STATIC_ROOT = str(ROOT_DIR / "static_cdn" / "static_root")
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -161,7 +164,7 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR / "media")
+MEDIA_ROOT = str(ROOT_DIR / "static_cdn" / "media_root")
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
 
@@ -300,6 +303,12 @@ ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
+
+# API versioning
+# ------------------------------------------------------------------------------
+REST_API_V1 = "v1"
+DEFAULT_VERSION = REST_API_V1
+ALLOWED_VERSIONS = [REST_API_V1,]
 # Loading Social App Credientials
 # GitHub Social Authentication
 SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
@@ -308,13 +317,14 @@ SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
 SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
 
 
-# Custom Social Auth Configs used in user_outh
+# Custom Social Auth Configs used in user_oauth
 SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
     SOCIAL_AUTH_GITHUB_CALLBACK
 ]
 
 
 # Social Authentication Settiing for All Auth
+SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'APP': {
@@ -329,14 +339,14 @@ SOCIALACCOUNT_PROVIDERS = {
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
+        # "rest_framework.authentication.TokenAuthentication",
         "allauth.account.auth_backends.AuthenticationBackend",
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
     ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }
 
 SIMPLE_JWT = {
@@ -354,9 +364,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000'
 ]
-# Your stuff...
-# ------------------------------------------------------------------------------
-
 # DJ_REST_AUTH
 
 REST_AUTH_SERIALIZERS = {
@@ -368,4 +375,3 @@ REST_USE_JWT = True
 JWT_AUTH_COOKIE = "token"
 JWT_AUTH_REFRESH_COOKIE = "refresh_token"
 # JWT_AUTH_SECURE = True
-

@@ -1,15 +1,12 @@
+from os import name
+from django.contrib.staticfiles.urls import urlpatterns
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 from django.conf import settings
-from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from facegram.users.api.views import UserViewSet
+app_name = 'api'
 
-if settings.DEBUG:
-    router = DefaultRouter()
-else:
-    router = SimpleRouter()
-
-router.register("users", UserViewSet)
-
-
-app_name = "api"
-urlpatterns = router.urls
+urlpatterns = [
+    path('users/c/', include('facegram.users.urls', namespace='users_api')),
+    path('user-profile/', include('facegram.profiles.urls', namespace='user_profile_api')),
+]
