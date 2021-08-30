@@ -3,8 +3,8 @@ import tempfile
 from django.core import files
 from config import celery_app
 from .models import Profile
+from time import sleep
 import logging
-
 logger = logging.getLogger(__name__)
 
 @celery_app.task()
@@ -21,14 +21,21 @@ def get_auth_provider_profile_pic(username, pic_url, provider):
         
     extension = ".png"
     file_name = f"{username}_{provider}_profile" + extension
-    temp_img = tempfile.NamedTemporaryFile(suffix=".jpg", prefix=file_name, delete=False)
+    temp_img = tempfile.NamedTemporaryFile(suffix=".png", prefix=file_name, delete=False)
 
     for block in response.iter_content(1024 * 8):
         if not block:
             break
         temp_img.write(block)
-
-    user_profile = Profile.objects.get(user__username=username)
-    user_profile.profile_pic.save(file_name, files.File(temp_img))
     
+    while True:
+        sleep(2)
+        try:
+            user_profile = Profile.objects.get(user__username=username)
+            user_profile.profile_pic.save(file_name, files.File(temp_img))
+            break
+        except Profile.DoesNotExist:
+            logger.error("Profile for user: %s does not exist" % username)
+            continue
+    return "success"
 

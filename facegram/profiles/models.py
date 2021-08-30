@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Profile(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic=models.ImageField(upload_to='profile_pics', blank=True, null=True, default='default.jpg')
+    profile_pic=models.ImageField(upload_to='avatars', blank=True, null=True, default='avatars/default.jpg')
     followers=models.ManyToManyField(User, related_name='followers', blank=True)
     following=models.ManyToManyField(User, related_name='following', blank=True)
     follower_count=models.PositiveIntegerField(default=0)
