@@ -364,9 +364,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000'
 ]
-# Your stuff...
-# ------------------------------------------------------------------------------
-
 # DJ_REST_AUTH
 
 REST_AUTH_SERIALIZERS = {

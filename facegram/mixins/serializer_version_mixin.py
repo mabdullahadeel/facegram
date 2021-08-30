@@ -12,5 +12,6 @@ class SerializerVersionMixin:
             raise Exception(f'version_map is not provided for {self.__class__.__name__}')
         
         version = self.request.version
+        print(version)
 
         return self._get_serializer_class(version)
