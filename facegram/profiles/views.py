@@ -20,12 +20,13 @@ class RetrieveUserProfileAPI(SerializerVersionMixin, RetrieveAPIView):
     version_map = {
         'v1': RetrieveUserProfileSerializerV1,
     }
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny,]
     lookup_field = 'user__username'
     lookup_url_kwarg = 'username'
 
     def get_queryset(self):
         username = self.kwargs.get(self.lookup_url_kwarg)
+        print(username)
         return Profile.objects.filter(user__username=username)
 
 
@@ -51,6 +52,6 @@ class UpdateUserProfileAPI(SerializerVersionMixin, UpdateAPIView):
             query = self.get_queryset()
             if request.user.username == query[0].user.username:
                 return super().update(request, *args, **kwargs)
-        return Response(data={"error": "User is not allowed to perform this action"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(data={"error": "User is not allowed to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
     
 
