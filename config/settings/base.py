@@ -85,6 +85,7 @@ LOCAL_APPS = [
     "facegram.users.apps.UsersConfig",
     "facegram.user_oauth.apps.UserOauthConfig",
     "facegram.profiles.apps.ProfilesConfig",
+    "facegram.posts.apps.PostsConfig",
     "facegram.extras.apps.ExtrasConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
