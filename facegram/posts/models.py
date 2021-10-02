@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.contrib.auth import get_user, get_user_model
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -19,7 +19,7 @@ class Post(models.Model):
             'png', 'jpg', 'jpeg',
         ])
     ], blank=True, null=True)
-    privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='OM')
+    privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='EO')
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -58,6 +58,6 @@ class PostComment(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
     likers = models.ManyToManyField(to=User, related_name="likers")
 
-    
+
     def __str__(self):
         return f"{self.post.id}-{self.total_likes}"

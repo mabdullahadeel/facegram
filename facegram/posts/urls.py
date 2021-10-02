@@ -3,4 +3,6 @@ from . import views
 
 app_name = "posts_api"
 
-urlpatterns = []
+urlpatterns = [
+    path('', views.PostList.as_view(), name='get_posts'),
+]
