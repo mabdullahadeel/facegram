@@ -1,10 +1,10 @@
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.exceptions import ValidationError
 from facegram.api_utils.api_response_utils import APIResponse
 from mixins.serializer_version_mixin import SerializerVersionMixin
-from .serializers.v1.serializers import PostSerializerV1
+from .serializers.v1.serializers import PostSerializerV1, PostUpdateSerializerV1
 from .models import Post
 
 
@@ -14,8 +14,9 @@ class PostList(SerializerVersionMixin, APIView):
 
     version_map = {
         'v1': {
-                "get" :PostSerializerV1,
-                "post" :PostSerializerV1
+                "get" : PostSerializerV1,
+                "post" : PostSerializerV1,
+                "put" : PostUpdateSerializerV1,
             },
     }
 
@@ -44,14 +45,31 @@ class PostList(SerializerVersionMixin, APIView):
         return APIResponse.error(data=serializer.errors)
 
 
-    def put(self, request, format=None):
+    def put(self, request, format=None, uuid=None):
         request_data = request.data
+        print(request_data)
         if not request_data:
             return APIResponse.error(data=[], message="No data provided...")
 
-        
+        try:
+            post = Post.objects.filter(uuid=uuid)
+        except ValidationError:
+            return APIResponse.error(data=[], message="Invalid uuid...")
+
+        if not post.exists():
+            return APIResponse.error(data=[], message="Post not found...", status_code=status.HTTP_404_NOT_FOUND)
+
+        if post.first().author != request.user:
+            return APIResponse.error(data=[], message="You are not allowed to edit this post...", status_code=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer_class(method=self.put.__name__)(post.first(), data=request_data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return APIResponse.success(data=serializer.data, status_code=status.HTTP_200_OK)
+
+        return APIResponse.error(data=serializer.errors)
 
 
     def delete(self, request, format=None):
-        return Response(data={"message": "DELETE method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return APIResponse.error(data={"message": "DELETE method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 

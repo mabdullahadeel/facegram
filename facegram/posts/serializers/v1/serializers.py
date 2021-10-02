@@ -20,3 +20,11 @@ class PostSerializerV1(serializers.ModelSerializer):
 
         validated_data['author'] = user
         return Post.objects.create(**validated_data)
+
+
+
+class PostUpdateSerializerV1(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        read_only_fields = ('created_at', 'updated_at','id', 'uuid')
+        exclude = ('author', 'created_at')
