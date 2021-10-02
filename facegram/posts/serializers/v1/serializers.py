@@ -9,7 +9,7 @@ class PostSerializerV1(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = "__all__"
-        read_only_fields = ('created_at', 'updated_at', 'author', 'id')
+        read_only_fields = ('created_at', 'updated_at', 'author', 'id', 'uuid')
 
 
     def create(self, validated_data):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import get_user_model
+from facegram.api_utils.gen_utils import get_uuid
 
 User = get_user_model()
 
@@ -20,8 +21,13 @@ class Post(models.Model):
         ])
     ], blank=True, null=True)
     privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='EO')
+    # uuid = models.UUIDField(default=get_uuid(), editable=False, unique=True, max_length=36)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        db_table = 'posts'
 
 
     def __str__(self):
@@ -45,6 +51,10 @@ class PostVotes(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
+    
+    class Meta:
+        db_table = 'post_votes'
+
 
     def __str__(self):
         return f"{self.post.id}-{self.voter.username}"
@@ -57,6 +67,10 @@ class PostComment(models.Model):
     body = models.TextField(max_length=755)
     total_likes = models.PositiveIntegerField(default=0)
     likers = models.ManyToManyField(to=User, related_name="likers")
+
+
+    class Meta:
+        db_table = 'post_comments'
 
 
     def __str__(self):

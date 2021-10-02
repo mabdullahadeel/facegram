@@ -45,7 +45,11 @@ class PostList(SerializerVersionMixin, APIView):
 
 
     def put(self, request, format=None):
-        pass
+        request_data = request.data
+        if not request_data:
+            return APIResponse.error(data=[], message="No data provided...")
+
+        
 
 
     def delete(self, request, format=None):
