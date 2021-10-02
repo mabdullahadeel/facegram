@@ -2,9 +2,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
+from facegram.api_utils.api_response_utils import APIResponse
 from mixins.serializer_version_mixin import SerializerVersionMixin
 from .serializers.v1.serializers import PostSerializerV1
 from .models import Post
+
 
 class PostList(SerializerVersionMixin, APIView):
 
@@ -23,20 +25,29 @@ class PostList(SerializerVersionMixin, APIView):
         if posts.exists():
             version_serializer= self.get_serializer_class(method=self.get.__name__)
             serializer = version_serializer(posts, many=True)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return APIResponse.success(data=serializer.data, status_code=status.HTTP_200_OK)
 
-        return Response(data={"message": "No posts"}, status=status.HTTP_204_NO_CONTENT)
+        return APIResponse.success(data=[], message="No posts yet", status_code=status.HTTP_204_NO_CONTENT)
 
 
     def post(self, request, format=None):
 
         if not request.data:
-            return Response(
-                data={"message": "No data was sent with the request..."},
-                status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse.error(
+                data=[],
+                message="No data provided...")
         
         serializer = self.get_serializer_class(method=self.post.__name__)(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse.success(data=serializer.data, status_code=status.HTTP_201_CREATED)
+        return APIResponse.error(data=serializer.errors)
+
+
+    def put(self, request, format=None):
+        pass
+
+
+    def delete(self, request, format=None):
+        return Response(data={"message": "DELETE method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+

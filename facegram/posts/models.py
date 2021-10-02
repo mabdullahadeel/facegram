@@ -11,7 +11,7 @@ PRIVACY_CHOICES = (
 )
 
 class Post(models.Model):
-    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author')
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author', editable=False)
     title = models.CharField(max_length=255)
     body = models.TextField()
     image = models.ImageField(upload_to='posts', validators=[
