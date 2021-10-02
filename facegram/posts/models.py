@@ -1,7 +1,7 @@
+import uuid
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import get_user_model
-from facegram.api_utils.gen_utils import get_uuid
 
 User = get_user_model()
 
@@ -12,7 +12,7 @@ PRIVACY_CHOICES = (
 )
 
 class Post(models.Model):
-    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author', editable=False)
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author')
     title = models.CharField(max_length=255)
     body = models.TextField()
     image = models.ImageField(upload_to='posts', validators=[
@@ -21,7 +21,7 @@ class Post(models.Model):
         ])
     ], blank=True, null=True)
     privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='EO')
-    # uuid = models.UUIDField(default=get_uuid(), editable=False, unique=True, max_length=36)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -47,6 +47,7 @@ class PostVotes(models.Model):
 
     post = models.ForeignKey(to=Post, related_name='post', on_delete=models.CASCADE)
     voter = models.ForeignKey(to=User, related_name='voter', on_delete=models.CASCADE)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -64,6 +65,7 @@ class PostVotes(models.Model):
 class PostComment(models.Model):
     post = models.ForeignKey(to=Post, related_name='related_post', on_delete=models.CASCADE)
     commenter = models.ForeignKey(to=User, related_name='commenter', on_delete=models.CASCADE)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     body = models.TextField(max_length=755)
     total_likes = models.PositiveIntegerField(default=0)
     likers = models.ManyToManyField(to=User, related_name="likers")
