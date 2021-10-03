@@ -112,5 +112,6 @@ class PostUpdateDelete(SerializerVersionMixin, APIView):
         if post.first().author != request.user:
             return APIResponse.error(data=[], message="You are not allowed to delete this post...", status_code=status.HTTP_403_FORBIDDEN)
 
+        post.first().image.delete()
         post.first().delete()
         return APIResponse.success(data=[], status_code=status.HTTP_204_NO_CONTENT)
