@@ -19,3 +19,5 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [PostCommentInline, PostVotesInline]
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(PostComment)
+admin.site.register(PostVotes)

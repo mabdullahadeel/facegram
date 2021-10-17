@@ -55,6 +55,7 @@ class PostVotes(models.Model):
     
     class Meta:
         db_table = 'post_votes'
+        verbose_name_plural = "Post Votes"
 
 
     def __str__(self):
@@ -68,11 +69,12 @@ class PostComment(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     body = models.TextField(max_length=755)
     total_likes = models.PositiveIntegerField(default=0)
-    likers = models.ManyToManyField(to=User, related_name="likers")
+    likers = models.ManyToManyField(to=User, related_name="likers", blank=True, null=True)
 
 
     class Meta:
         db_table = 'post_comments'
+        verbose_name_plural = "Post Comments"
 
 
     def __str__(self):

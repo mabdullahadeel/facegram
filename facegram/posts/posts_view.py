@@ -2,8 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from facegram.api_utils.api_response_utils import APIResponse
-from facegram.mixins import serializer_version_mixin
-from mixins.serializer_version_mixin import SerializerVersionMixin
+from facegram.mixins.serializer_version_mixin import SerializerVersionMixin
 from .serializers.v1.serializers import PostSerializerV1, PostUpdateSerializerV1
 from .decorators import is_uuid_valid
 from .models import Post
@@ -41,7 +40,7 @@ class PostRetrieveView(SerializerVersionMixin, APIView):
     def get(self, request, format=None, uuid=None):
         post = Post.objects.filter(uuid=uuid)
         if post.exists():
-            version_serializer= self.get_serializer_class(method=self.get.__name__)
+            version_serializer = self.get_serializer_class(method=self.get.__name__)
             serializer = version_serializer(post.first())
             return APIResponse.success(data=serializer.data, status_code=status.HTTP_200_OK)
         else:
