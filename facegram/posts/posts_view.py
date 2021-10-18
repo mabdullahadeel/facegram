@@ -52,7 +52,6 @@ class PostCreateView(SerializerVersionMixin, APIView):
 
     version_map = {
         'v1': {
-                "get" : PostSerializerV1,
                 "post" : PostSerializerV1,
             },
     }

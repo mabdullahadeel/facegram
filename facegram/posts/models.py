@@ -7,7 +7,7 @@ User = get_user_model()
 
 PRIVACY_CHOICES = (
     ('OM', "Only Me"),
-    ('OF', "Only Friends"),
+    ('OF', "Only Followers"),
     ('EO', "Every One")
 )
 
@@ -70,7 +70,8 @@ class PostComment(models.Model):
     body = models.TextField(max_length=755)
     total_likes = models.PositiveIntegerField(default=0)
     likers = models.ManyToManyField(to=User, related_name="likers", blank=True, null=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'post_comments'
