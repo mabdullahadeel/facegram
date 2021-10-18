@@ -85,3 +85,21 @@ class CommentAPIView(SerializerVersionMixin, APIView):
         except Exception as e:
             return APIResponse.error(data=[], message=str(e))
 
+
+    
+    @user_is_allowed_to_comment
+    def delete(self, request, format=None, *args, **kwargs):
+        """
+            Delete a comment on a post.
+        """
+        try:
+            comment = kwargs.get('comment', None)      # set by the decorator
+
+            if comment.commenter != request.user:
+                return APIResponse.error(data=[], message='comment deletion not allowed', status_code=status.HTTP_403_FORBIDDEN)
+            
+            comment.delete()
+            return APIResponse.success(data=[], status_code=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return APIResponse.error(data=[], message=str(e))
+
