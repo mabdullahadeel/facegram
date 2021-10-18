@@ -73,12 +73,8 @@ class CommentAPIView(SerializerVersionMixin, APIView):
             Update a comment on a post.
         """
         try:
-            comment_id = request.data.get('comment_id', None)
-            if not comment_id:
-                return APIResponse.error(data=[], message='post_id and comment_id are required')
-            commenting_post = kwargs.get('post', None)      # set by the decorator
+            comment = kwargs.get('comment', None)      # set by the decorator
 
-            comment = PostComment.objects.get(Q(id=comment_id) & Q(post=commenting_post))
             if comment.commenter != request.user:
                 return APIResponse.error(data=[], message='comment update not allowed', status_code=status.HTTP_403_FORBIDDEN)
             
