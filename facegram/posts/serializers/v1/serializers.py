@@ -1,7 +1,5 @@
-from django.db.models import fields
-from django.db.models.base import Model
 from rest_framework import serializers
-from facegram.posts.models import Post, PostComment
+from facegram.posts.models import Post, PostComment, PostVotes, PostCommentVotes
 from facegram.users.api.serializers import UserPostSerializer
 
 
@@ -35,3 +33,28 @@ class PostCommentSerializerV1(serializers.ModelSerializer):
         model = PostComment
         fields = "__all__"
         read_only_fields = ('created_at', 'updated_at', 'id', 'uuid', 'post', 'commenter', 'total_likes')
+
+
+class PostVoteSerializerV1(serializers.ModelSerializer):
+    class Meta:
+        model = PostVotes
+        fields = '__all__'
+        read_only_fields = ('created_at', 'last_modified', 'id', 'uuid', 'post', 'voter')
+
+
+    def create(self, validated_data):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        post = self.context.get('post')
+        validated_data['post'] = post
+        validated_data['voter'] = user
+        return PostVotes.objects.create(**validated_data)
+
+
+class PostCommentVoteSerializerV1(serializers.ModelSerializer):
+    class Meta:
+        model = PostCommentVotes
+        fields = ('total_likes',)
+        read_only_fields = ('created_at', 'last_modified', 'id', 'post_comment', 'voter')

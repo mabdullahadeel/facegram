@@ -4,7 +4,6 @@ from facegram.api_utils.api_response_utils import APIResponse
 from facegram.mixins.serializer_version_mixin import SerializerVersionMixin
 from .models import PostComment, Post
 from .serializers.v1.serializers import PostCommentSerializerV1
-from django.db.models import Q
 from .decorators import user_is_allowed_to_comment
 
 

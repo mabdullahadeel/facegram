@@ -46,7 +46,7 @@ class PostVotes(models.Model):
     )
 
     post = models.ForeignKey(to=Post, related_name='post', on_delete=models.CASCADE)
-    voter = models.ForeignKey(to=User, related_name='voter', on_delete=models.CASCADE)
+    voter = models.OneToOneField(to=User, related_name='voter', on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,8 +68,6 @@ class PostComment(models.Model):
     commenter = models.ForeignKey(to=User, related_name='commenter', on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     body = models.TextField(max_length=755)
-    total_likes = models.PositiveIntegerField(default=0)
-    likers = models.ManyToManyField(to=User, related_name="likers", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -79,4 +77,27 @@ class PostComment(models.Model):
 
 
     def __str__(self):
-        return f"{self.post.id}-{self.total_likes}"
+        return f"{self.post.id}-{self.commenter}"
+
+
+class PostCommentVotes(models.Model):
+    
+        REACTION_CHOICES = (
+            ('UV', 'upvote'),
+            ('DV', 'downvote'),
+        )
+    
+        post_comment = models.ForeignKey(to=PostComment, related_name='post_comment', on_delete=models.CASCADE)
+        comment_voter = models.OneToOneField(to=User, related_name='comment_voter', on_delete=models.CASCADE)
+        reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
+        created_at = models.DateTimeField(auto_now_add=True)
+        last_modified = models.DateTimeField(auto_now=True)
+    
+        
+        class Meta:
+            db_table = 'post_comment_votes'
+            verbose_name_plural = "Post Comment Votes"
+    
+    
+        def __str__(self):
+            return f"{self.post_comment.id}-{self.voter.username}"
