@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from rest_framework import serializers, status
+from rest_framework import status
 from facegram.api_utils.api_response_utils import APIResponse
 from facegram.mixins.serializer_version_mixin import SerializerVersionMixin
 from .models import PostComment, Post
 from .serializers.v1.serializers import PostCommentSerializerV1
+from django.db.models import Q
 from .decorators import user_is_allowed_to_comment
 
 
@@ -19,6 +20,7 @@ class CommentAPIView(SerializerVersionMixin, APIView):
         'v1': {
                 "get" : PostCommentSerializerV1,
                 "post" : PostCommentSerializerV1,
+                "patch" : PostCommentSerializerV1,
             },
     }
 
@@ -37,7 +39,6 @@ class CommentAPIView(SerializerVersionMixin, APIView):
             if comments.exists():
                 serializer = self.get_serializer_class(method=self.get.__name__)(comments, many=True)
                 return APIResponse.success(data=serializer.data)
-
             return APIResponse.success(data=[])
         except Exception as e:
             if type(e) == ValueError or type(e) == Post.DoesNotExist:
@@ -59,7 +60,6 @@ class CommentAPIView(SerializerVersionMixin, APIView):
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return APIResponse.success(data=serializer.data, status_code=status.HTTP_201_CREATED)
-
         except Exception as e:
             if type(e) == ValueError or type(e) == Post.DoesNotExist:
                 return APIResponse.error(data=[],  message=str(e))
@@ -73,14 +73,19 @@ class CommentAPIView(SerializerVersionMixin, APIView):
             Update a comment on a post.
         """
         try:
-            post_id = request.GET.get('post_id', None)
             comment_id = request.data.get('comment_id', None)
-
-            if not post_id or not comment_id:
+            if not comment_id:
                 return APIResponse.error(data=[], message='post_id and comment_id are required')
+            commenting_post = kwargs.get('post', None)      # set by the decorator
+
+            comment = PostComment.objects.get(Q(id=comment_id) & Q(post=commenting_post))
+            if comment.commenter != request.user:
+                return APIResponse.error(data=[], message='comment update not allowed', status_code=status.HTTP_403_FORBIDDEN)
             
-            commenting_post = Post.objects.get(id=post_id)
-            
+            serializer = self.get_serializer_class(method=self.patch.__name__)(comment, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return APIResponse.success(data=serializer.data, status_code=status.HTTP_200_OK)
         except Exception as e:
             return APIResponse.error(data=[], message=str(e))
 

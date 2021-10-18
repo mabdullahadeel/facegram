@@ -42,7 +42,7 @@ def user_is_allowed_to_comment(func):
         if not post_id:
             return APIResponse.error(data=[], message='post_id is required')
 
-        post = Post.objects.filter(id=request.GET.get('post_id'))
+        post = Post.objects.filter(id=post_id)
         if not post.exists() or post.first().privacy == "OM":
             return APIResponse.error(data=[], message="user is not allowed to comment", status_code=http_status.HTTP_403_FORBIDDEN)
         
