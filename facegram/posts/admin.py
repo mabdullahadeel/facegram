@@ -26,7 +26,7 @@ class PostCommentVotesInline(admin.StackedInline):
 class PostCommentAdmin(admin.ModelAdmin):
     list_display = ('commenter', 'post', 'created_at')
     list_filter = ('created_at',)
-    search_fields = ('commenter__username')
+    search_fields = ('commenter__username',)
     inlines = [PostCommentVotesInline]
 
 
