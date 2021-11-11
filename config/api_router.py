@@ -1,7 +1,6 @@
 from os import name
 from django.contrib.staticfiles.urls import urlpatterns
 from django.urls import path, include
-from django.conf import settings
 
 app_name = 'api'
 
