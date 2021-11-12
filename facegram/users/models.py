@@ -11,11 +11,11 @@ class User(AbstractUser):
     first_name = CharField(_("First name of User"), blank=True, max_length=255)
     last_name = CharField(_("Last name of User"), blank=True, max_length=255)
 
-    def get_absolute_url(self):
-        """Get url for user's detail view.
+    # def get_absolute_url(self):
+    #     """Get url for user's detail view.
 
-        Returns:
-            str: URL for user detail.
+    #     Returns:
+    #         str: URL for user detail.
 
-        """
-        return reverse("users:detail", kwargs={"username": self.username})
+    #     """
+    #     return reverse("users:detail", kwargs={"username": self.username})

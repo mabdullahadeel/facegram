@@ -21,6 +21,16 @@
       "database": "facegram",
       "username": "debug",
       "password": "debug"
+    },
+    {
+      "previewLimit": 50,
+      "server": "postgres",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "facegram",
+      "database": "facegram",
+      "username": "debug",
+      "password": "debug"
     }
   ],
   "python.testing.unittestEnabled": false,

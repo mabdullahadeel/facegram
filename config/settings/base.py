@@ -355,25 +355,20 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ('JWT','Bearer'),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
-    # "AUTH_TOKEN_CLASSES": (
-    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    # )
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
-]
+
 # DJ_REST_AUTH
-
 REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
+    "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer",
+    "USER_DETAILS_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
 }
-
 REST_SESSION_LOGIN = False
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "token"
 JWT_AUTH_REFRESH_COOKIE = "refresh_token"
+OLD_PASSWORD_FIELD_ENABLED = True
 # JWT_AUTH_SECURE = True
