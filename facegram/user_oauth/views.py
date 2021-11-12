@@ -7,12 +7,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .o_auth_utils import get_github_authorization_url
 from .models import OAuthScopes
+from facegram.user_oauth.provider.github.github import FGGitHubAuth
 
 
-class GithubLogin(SocialLoginView, APIView):
-    adapter_class = GitHubOAuth2Adapter
-    callback_url = settings.SOCIAL_AUTH_GITHUB_CALLBACK
-    client_class = OAuth2Client
+class GithubLogin(APIView):
+    # adapter_class = GitHubOAuth2Adapter
+    # callback_url = settings.SOCIAL_AUTH_GITHUB_CALLBACK
+    # client_class = OAuth2Client
 
 
     def get(self, request, *args, **kwargs):
@@ -44,7 +45,8 @@ class GithubLogin(SocialLoginView, APIView):
         else:
             oauth_scopes.delete()
         
-        return super().post(request, *args, **kwargs)
+        # return super().post(request, *args, **kwargs)
+        return FGGitHubAuth.login_user(code=request.data.get('code', None))
 
 
 

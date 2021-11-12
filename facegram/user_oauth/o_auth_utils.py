@@ -1,5 +1,5 @@
 from django.conf import settings
-from .utils import get_random_string
+from facegram.utils.randoms import get_random_string
 from .models import OAuthScopes
 
 def save_state_to_db(ip, state, provider):
