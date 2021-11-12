@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
-from .o_auth_utils import get_github_authorization_url
+from .utils import get_github_authorization_url
 from .models import OAuthScopes
 from facegram.user_oauth.provider.github.github import FGGitHubAuth
 

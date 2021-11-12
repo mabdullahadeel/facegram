@@ -30,8 +30,8 @@ class User(AbstractUser):
     def get_tokens(self):
         token = RefreshToken.for_user(self)
         return {
-            settings.FG_JWT_AUTH['FG_JWT_ACCESS_KEY']: str(token),
-            settings.FG_JWT_AUTH['FG_JWT_REFRESH_KEY']: str(token.access_token)
+            settings.FG_JWT_AUTH['FG_JWT_ACCESS_KEY']: str(token.access_token),
+            settings.FG_JWT_AUTH['FG_JWT_REFRESH_KEY']: str(token)
         }
 
 
