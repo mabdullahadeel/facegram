@@ -1,8 +1,8 @@
 import requests
 from django.conf import settings
-from facegram.user_oauth import provider
+# from facegram.user_oauth import provider
 from facegram.user_oauth.register import RegisterSocialUser
-from facegram.user.models import AUTH_PROVIDERS
+from facegram.users.models import AUTH_PROVIDERS
 
 class FGGitHubAuth:
     def __init__(self, code):

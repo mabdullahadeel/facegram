@@ -13,7 +13,7 @@ AUTH_PROVIDERS = {
 
 class User(AbstractUser):
     """Default user for facegram."""
-
+    email = models.EmailField(max_length=255, unique=True, db_index=True)
     is_verified = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
     auth_provider = models.CharField(
@@ -22,7 +22,7 @@ class User(AbstractUser):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
