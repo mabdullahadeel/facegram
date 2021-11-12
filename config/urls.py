@@ -22,8 +22,8 @@ urlpatterns += [
     # API base url
     path(f"api/{settings.REST_API_V1}/", include(("config.api_router", "api"), namespace="v1")),
     # JWT AUTH
-    path("api/auth/", include("dj_rest_auth.urls")),
-    path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
+    # path("api/auth/", include("dj_rest_auth.urls")),
+    # path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
     path("api/oauth/o/", include("facegram.user_oauth.urls", namespace="user_oauth")),
 ]
 

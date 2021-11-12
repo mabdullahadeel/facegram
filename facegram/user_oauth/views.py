@@ -1,6 +1,3 @@
-from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,9 +9,6 @@ from facegram.user_oauth.provider.github.github import FGGitHubAuth
 
 
 class GithubLogin(APIView):
-    # adapter_class = GitHubOAuth2Adapter
-    # callback_url = settings.SOCIAL_AUTH_GITHUB_CALLBACK
-    # client_class = OAuth2Client
     permission_classes = (AllowAny,)
 
 
@@ -41,13 +35,12 @@ class GithubLogin(APIView):
         if not matching_state:
             return Response(data= {"error": "Invalid State"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
-        # oauth_scopes = matching_state[0]
-        # if oauth_scopes.ip != request.META.get('REMOTE_ADDR'):
-        #     return Response(data= {"error": "Invalid IP"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-        # else:
-        #     oauth_scopes.delete()
+        oauth_scopes = matching_state[0]
+        if oauth_scopes.ip != request.META.get('REMOTE_ADDR'):
+            return Response(data= {"error": "Invalid IP"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        else:
+            oauth_scopes.delete()
         
-        # return super().post(request, *args, **kwargs)
         return Response(data=FGGitHubAuth(code=request.data.get('code', None)).login_user(), status=status.HTTP_201_CREATED)
 
 
