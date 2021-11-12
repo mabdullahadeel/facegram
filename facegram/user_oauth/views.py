@@ -4,6 +4,7 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from .o_auth_utils import get_github_authorization_url
 from .models import OAuthScopes
@@ -14,6 +15,7 @@ class GithubLogin(APIView):
     # adapter_class = GitHubOAuth2Adapter
     # callback_url = settings.SOCIAL_AUTH_GITHUB_CALLBACK
     # client_class = OAuth2Client
+    permission_classes = (AllowAny,)
 
 
     def get(self, request, *args, **kwargs):
@@ -39,14 +41,14 @@ class GithubLogin(APIView):
         if not matching_state:
             return Response(data= {"error": "Invalid State"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
-        oauth_scopes = matching_state[0]
-        if oauth_scopes.ip != request.META.get('REMOTE_ADDR'):
-            return Response(data= {"error": "Invalid IP"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-        else:
-            oauth_scopes.delete()
+        # oauth_scopes = matching_state[0]
+        # if oauth_scopes.ip != request.META.get('REMOTE_ADDR'):
+        #     return Response(data= {"error": "Invalid IP"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        # else:
+        #     oauth_scopes.delete()
         
         # return super().post(request, *args, **kwargs)
-        return FGGitHubAuth.login_user(code=request.data.get('code', None))
+        return Response(data=FGGitHubAuth(code=request.data.get('code', None)).login_user(), status=status.HTTP_201_CREATED)
 
 
 

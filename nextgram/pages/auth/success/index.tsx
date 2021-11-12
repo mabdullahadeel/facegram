@@ -14,21 +14,19 @@ function LoginSuccess() {
 
     const url = "http://127.0.0.1:8000/api/oauth/o/github/";
 
-    console.log(details);
-
     // axios
     //   .post(url, config)
     //   .then((response) => {
     //     console.log(response);
     //   })
     //   .catch((err) => console.log(err));
-    // axios({
-    //   method: "post",
-    //   url: url,
-    //   data: details,
-    // })
-    //   .then((response) => console.log(response))
-    //   .catch((err) => console.log(err));
+    axios({
+      method: "post",
+      url: url,
+      data: details,
+    })
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
   }, []);
 
   return <div>Congratulations! Login was successful</div>;
