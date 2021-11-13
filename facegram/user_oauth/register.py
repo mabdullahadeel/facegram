@@ -1,10 +1,12 @@
 import random
-from typing import Tuple
-from django.contrib.auth import get_user_model, login
+from typing import List, Tuple
+
+from django.contrib.auth import get_user_model
 from rest_framework.exceptions import AuthenticationFailed
-from facegram.utils.randoms import id_generator
-from facegram.users.models import User
+
 from facegram.user_oauth.utils import UserResponse
+from facegram.users.models import User
+from facegram.utils.randoms import id_generator
 
 
 class RegisterSocialUser:
@@ -25,7 +27,7 @@ class RegisterSocialUser:
 
 
     def register_social_user(provider: str, user_data: dict) -> str:
-        filtering_by_email = get_user_model().objects.filter(email=user_data.get("email"))
+        filtering_by_email: List[User] = get_user_model().objects.filter(email=user_data.get("email"))
 
         if filtering_by_email.exists():
             user: User = filtering_by_email.first()

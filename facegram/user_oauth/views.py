@@ -1,12 +1,14 @@
 from django.conf import settings
-from rest_framework.views import APIView
-from facegram.api_utils.api_response_utils import APIResponse
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from rest_framework import status
-from .utils import get_github_authorization_url
-from .models import OAuthScopes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from facegram.api_utils.api_response_utils import APIResponse
 from facegram.user_oauth.provider.github.github import FGGitHubAuth
+
+from .models import OAuthScopes
+from .utils import get_github_authorization_url
 
 
 class GithubLogin(APIView):
