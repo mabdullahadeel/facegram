@@ -57,7 +57,7 @@ class FGGitHubAuth:
                 "Authorization": f"token {access_token}"
             }
             email = None
-            resp = requests.get(email_url, headers=headers)
+            resp = requests.get(email_url, headers=headers, timeout=12)
             resp.raise_for_status()
             emails = resp.json()
             if resp.status_code == 200 and emails:
@@ -85,5 +85,11 @@ class FGGitHubAuth:
             if email:
                 user_info["email"] = email
             return RegisterSocialUser.register_social_user(provider=AUTH_PROVIDERS.get("github"), user_data=user_info)
+        except requests.exceptions.Timeout as e:
+            raise Exception("Opps! cannot communicate to github. Please try again.")
+        except requests.exceptions.RequestException as e:
+            raise Exception("Opps! cannot communicate to github. Please try again.")
+        except requests.exceptions.HTTPError as e:
+            raise Exception("Opps! cannot communicate to github. Please try again.")
         except Exception as e:
             raise e
