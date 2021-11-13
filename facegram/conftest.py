@@ -1,8 +1,9 @@
 import pytest
 
 from facegram.users.models import User
-from facegram.users.tests.factories import UserFactory
+from facegram.users.tests.factories import UserFactory, AdminUserFactory
 from rest_framework.test import APIClient
+from facegram.utils.fgtesting.response import TestAPIResponse
 
 
 @pytest.fixture(autouse=True)
@@ -24,3 +25,19 @@ def api_client() -> APIClient:
 def authenticated_client(api_client, user):
     api_client.force_authenticate(user)
     return api_client
+
+
+@pytest.fixture
+def test_response():
+    return TestAPIResponse
+
+
+@pytest.fixture
+def fg_admin_user() -> User:
+    return AdminUserFactory()
+
+
+@pytest.fixture
+def fg_admin_client(client, fg_admin_user):
+    client.force_login(fg_admin_user)
+    return client

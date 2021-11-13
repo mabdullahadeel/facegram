@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "url": {"view_name": "api:users_api:user-detail", "lookup_field": "username"}
         }
+        read_only_fields = ["id", "email"]
 
 class UserPostSerializer(serializers.ModelSerializer):
     class Meta:

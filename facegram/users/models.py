@@ -33,13 +33,3 @@ class User(AbstractUser):
             settings.FG_JWT_AUTH['FG_JWT_ACCESS_KEY']: str(token.access_token),
             settings.FG_JWT_AUTH['FG_JWT_REFRESH_KEY']: str(token)
         }
-
-
-    # def get_absolute_url(self):
-    #     """Get url for user's detail view.
-
-    #     Returns:
-    #         str: URL for user detail.
-
-    #     """
-    #     return reverse("users:detail", kwargs={"username": self.username})
