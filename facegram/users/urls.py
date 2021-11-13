@@ -13,5 +13,10 @@ urlpatterns = [
 ]
 router = SimpleRouter()
 router.register('', UserViewSet)
+"""
+Router Urls:
+    me/ -> me ~ GET (name='user-me')
+    <str:username>/ -> me ~ PATCH, GET (name='user-detail')
+"""
 
 urlpatterns += router.urls
