@@ -48,7 +48,7 @@ class TestUserManagement:
         assert response.data == test_response.success(data=data)
 
 
-    def test_email_update_not_allowed(self, user: User, authenticated_client: APIClient, test_response: TestAPIResponse):
+    def test_email_update_not_allowed(self, user: User, authenticated_client: APIClient):
         new_email = Faker().email()
 
         data = {

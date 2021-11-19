@@ -22,7 +22,7 @@ def api_client() -> APIClient:
 
 
 @pytest.fixture
-def authenticated_client(api_client, user):
+def authenticated_client(api_client: APIClient, user):
     api_client.force_authenticate(user)
     return api_client
 
@@ -38,6 +38,7 @@ def fg_admin_user() -> User:
 
 
 @pytest.fixture
-def fg_admin_client(client, fg_admin_user):
+def fg_admin_client(client: APIClient, fg_admin_user):
     client.force_login(fg_admin_user)
     return client
+

@@ -1,3 +1,5 @@
+from django.http.request import HttpRequest
+from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -56,12 +58,12 @@ class PostCreateView(SerializerVersionMixin, APIView):
             },
     }
 
-    def post(self, request, format=None):
+    def post(self, request: HttpRequest, format=None):
         if not request.data:
             return APIResponse.error(
                 data=[],
                 message="No data provided...")
-        serializer = self.get_serializer_class(method=self.post.__name__)(data=request.data, context={'request': request})
+        serializer: ModelSerializer = self.get_serializer_class(method=self.post.__name__)(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return APIResponse.success(data=serializer.data, status_code=status.HTTP_201_CREATED)

@@ -21,7 +21,7 @@ class Post(models.Model):
         ])
     ], blank=True, null=True)
     privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='EO')
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -32,10 +32,6 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.author}"
-
-
-    class Meta:
-        ordering = ('-created_at',)
 
 
 class PostVotes(models.Model):
