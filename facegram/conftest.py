@@ -1,8 +1,8 @@
 import pytest
+from rest_framework.test import APIClient
 
 from facegram.users.models import User
-from facegram.users.tests.factories import UserFactory, AdminUserFactory
-from rest_framework.test import APIClient
+from facegram.users.tests.factories import AdminUserFactory, UserFactory
 from facegram.utils.fgtesting.response import TestAPIResponse
 
 
