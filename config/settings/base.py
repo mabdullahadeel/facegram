@@ -291,8 +291,8 @@ ALLOWED_VERSIONS = [REST_API_V1,]
 # Loading Social App Credientials
 # GitHub Social Authentication
 SOCIAL_AUTH_GITHUB_SCOPE = ["user:email", "read:user"]
-SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
-SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY", default="A5Uper5eCretKey")
+SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET", default="A5Uper5eSecrotCretKey")
 SOCIAL_AUTH_GITHUB_CALLBACK = "http://localhost:3000/auth/success/"
 
 
