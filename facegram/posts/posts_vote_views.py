@@ -1,4 +1,4 @@
-from django.template import context
+from django.http.request import HttpRequest
 from rest_framework.views import APIView
 from rest_framework import status
 from facegram.api_utils.api_response_utils import APIResponse
@@ -8,7 +8,7 @@ from .decorators import (
     is_user_allowed_to_vote_on_comment,
     user_is_allowed_to_vote_on_post
 )
-from .models import Post
+from .models import Post, PostVotes
 
 
 
@@ -27,25 +27,25 @@ class PostVotesAPIView(SerializerVersionMixin, APIView):
 
 
     @user_is_allowed_to_vote_on_post
-    def post(self, request, format=None, *args, **kwargs):
+    def post(self, request: HttpRequest, format=None, *args, **kwargs):
         """
             Add/Remove reaction/vote on the post
         """
         try:
-            vote = kwargs.get('vote', None)      # set by the decorator
+            vote: PostVotes = kwargs.get('vote', None)      # set by the decorator
             if vote:                             # Update Vote
                 if vote.voter != request.user:
                     return APIResponse.error(status_code=status.HTTP_401_UNAUTHORIZED, message="vote update denied")
                 serializer = self.get_serializer_class(method=self.post.__name__)(vote, data=request.data, partial=True)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
-                    return APIResponse.success(status_code=status.HTTP_200_OK)
+                    return APIResponse.success()
             else:                                  # Create Vote
                 post = Post.objects.get(id=request.GET.get('post_id', None))
                 serializer = self.get_serializer_class(method=self.post.__name__)(data=request.data, context={'request': request, 'post': post})
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
-                    return APIResponse.success(status_code=status.HTTP_200_OK)
+                    return APIResponse.success()
 
             return APIResponse.error()
         except Exception as e:
@@ -53,17 +53,17 @@ class PostVotesAPIView(SerializerVersionMixin, APIView):
 
 
     @user_is_allowed_to_vote_on_post
-    def delete(self, request, format=None, *args, **kwargs):
+    def delete(self, request: HttpRequest, format=None, *args, **kwargs):
         """
             Delete vote on the post
         """
         try:
-            vote = kwargs.get('vote', None)      # set by the decorator
+            vote: PostVotes = kwargs.get('vote', None)      # set by the decorator
             if not vote or vote.voter != request.user:
                 return APIResponse.error(message="action not allowed", status_code=status.HTTP_403_FORBIDDEN)
             
             vote.delete()
-            return APIResponse.success(status_code=status.HTTP_200_OK)
+            return APIResponse.success()
 
         except Exception as e:
             return APIResponse.error(message=str(e))

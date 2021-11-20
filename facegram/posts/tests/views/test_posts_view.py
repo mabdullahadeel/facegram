@@ -1,14 +1,14 @@
-from django.test.client import encode_multipart
+from typing import List, Optional, TypedDict
+
 import pytest
-from typing import List, TypedDict, Optional
+from django.forms.models import model_to_dict
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient
-from rest_framework import status
-from facegram.users.models import User
-from facegram.posts.models import Post
-from django.forms.models import model_to_dict
-from .helpers.posts_worker import PostFactoryWorker
 
+from facegram.posts.models import Post
+from facegram.posts.tests.helpers.posts_worker import PostFactoryWorker
+from facegram.users.models import User
 
 pytestmark = pytest.mark.django_db
 
@@ -31,7 +31,7 @@ class PostsDictType(TypedDict):
     last_modified: str
 
 
-class TestPostV1:
+class TestPostViewsV1:
     base_endpoint = '/api/v1/posts/'
 
 

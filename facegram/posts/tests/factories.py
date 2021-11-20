@@ -19,3 +19,4 @@ class PostFactory(DjangoModelFactory):
     image = factory.django.ImageField(color='blue', format='JPEG')
     privacy = factory.Iterator(PRIVACY_OPTIONS)
 
+
