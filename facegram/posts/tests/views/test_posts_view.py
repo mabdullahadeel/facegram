@@ -1,6 +1,4 @@
 from django.test.client import encode_multipart
-import factory
-from faker.proxy import Faker
 import pytest
 from typing import List, TypedDict, Optional
 from rest_framework.response import Response
