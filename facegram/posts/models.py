@@ -43,7 +43,7 @@ class PostVotes(models.Model):
 
     post = models.ForeignKey(to=Post, related_name='post', on_delete=models.CASCADE)
     voter = models.OneToOneField(to=User, related_name='voter', on_delete=models.CASCADE)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -62,7 +62,7 @@ class PostVotes(models.Model):
 class PostComment(models.Model):
     post = models.ForeignKey(to=Post, related_name='related_post', on_delete=models.CASCADE)
     commenter = models.ForeignKey(to=User, related_name='commenter', on_delete=models.CASCADE)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     body = models.TextField(max_length=755)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -85,6 +85,7 @@ class PostCommentVotes(models.Model):
     
         post_comment = models.ForeignKey(to=PostComment, related_name='post_comment', on_delete=models.CASCADE)
         comment_voter = models.OneToOneField(to=User, related_name='comment_voter', on_delete=models.CASCADE)
+        uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
         reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
         created_at = models.DateTimeField(auto_now_add=True)
         last_modified = models.DateTimeField(auto_now=True)
