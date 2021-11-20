@@ -27,7 +27,7 @@ function Login() {
         "http://127.0.0.1:8000/api/oauth/o/github/?redirect_uri=http://localhost:3000/auth/success/"
       )
       .then((response) => {
-        const data: RequestIntiateAuthRes = response.data;
+        const data: RequestIntiateAuthRes = response.data.data;
         router.push(data.authorization_uri);
       })
       .catch((err) => console.log(err.message))

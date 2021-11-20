@@ -12,9 +12,6 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    # Your stuff: custom urls includes go here
-    path("users/", include("facegram.users.urls", namespace="users")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
@@ -25,8 +22,7 @@ urlpatterns += [
     # API base url
     path(f"api/{settings.REST_API_V1}/", include(("config.api_router", "api"), namespace="v1")),
     # JWT AUTH
-    path("api/auth/", include("dj_rest_auth.urls")),
-    path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
+    path('api/auth/user/', include('facegram.users.urls', namespace='users_api')),
     path("api/oauth/o/", include("facegram.user_oauth.urls", namespace="user_oauth")),
 ]
 

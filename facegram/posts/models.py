@@ -7,7 +7,7 @@ User = get_user_model()
 
 PRIVACY_CHOICES = (
     ('OM', "Only Me"),
-    ('OF', "Only Friends"),
+    ('OF', "Only Followers"),
     ('EO', "Every One")
 )
 
@@ -21,7 +21,7 @@ class Post(models.Model):
         ])
     ], blank=True, null=True)
     privacy = models.CharField(max_length=6, choices=PRIVACY_CHOICES, default='EO')
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -34,10 +34,6 @@ class Post(models.Model):
         return f"{self.title} - {self.author}"
 
 
-    class Meta:
-        ordering = ('-created_at',)
-
-
 class PostVotes(models.Model):
 
     REACTION_CHOICES = (
@@ -46,8 +42,8 @@ class PostVotes(models.Model):
     )
 
     post = models.ForeignKey(to=Post, related_name='post', on_delete=models.CASCADE)
-    voter = models.ForeignKey(to=User, related_name='voter', on_delete=models.CASCADE)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    voter = models.OneToOneField(to=User, related_name='voter', on_delete=models.CASCADE)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -55,6 +51,7 @@ class PostVotes(models.Model):
     
     class Meta:
         db_table = 'post_votes'
+        verbose_name_plural = "Post Votes"
 
 
     def __str__(self):
@@ -65,15 +62,39 @@ class PostVotes(models.Model):
 class PostComment(models.Model):
     post = models.ForeignKey(to=Post, related_name='related_post', on_delete=models.CASCADE)
     commenter = models.ForeignKey(to=User, related_name='commenter', on_delete=models.CASCADE)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
     body = models.TextField(max_length=755)
-    total_likes = models.PositiveIntegerField(default=0)
-    likers = models.ManyToManyField(to=User, related_name="likers")
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'post_comments'
+        verbose_name_plural = "Post Comments"
 
 
     def __str__(self):
-        return f"{self.post.id}-{self.total_likes}"
+        return f"{self.post.id}-{self.commenter}"
+
+
+class PostCommentVotes(models.Model):
+    
+        REACTION_CHOICES = (
+            ('UV', 'upvote'),
+            ('DV', 'downvote'),
+        )
+    
+        post_comment = models.ForeignKey(to=PostComment, related_name='post_comment', on_delete=models.CASCADE)
+        comment_voter = models.OneToOneField(to=User, related_name='comment_voter', on_delete=models.CASCADE)
+        uuid = models.CharField(default=uuid.uuid4, editable=False, unique=True, max_length=36)
+        reaction = models.CharField(max_length=6, choices=REACTION_CHOICES)
+        created_at = models.DateTimeField(auto_now_add=True)
+        last_modified = models.DateTimeField(auto_now=True)
+    
+        
+        class Meta:
+            db_table = 'post_comment_votes'
+            verbose_name_plural = "Post Comment Votes"
+    
+    
+        def __str__(self):
+            return f"{self.post_comment.id}-{self.comment_voter.username}"

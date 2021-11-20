@@ -4,7 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-
+echo "Starting to make migrations"
+python manage.py makemigrations
+echo "Migrations done"
 python manage.py migrate
 echo "Django migrations done"
 echo "Collecting static files"

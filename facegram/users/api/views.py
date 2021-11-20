@@ -1,16 +1,16 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.response import Response
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
+
+from facegram.api_utils.api_response_utils import APIResponse
 
 from .serializers import UserSerializer
 
 User = get_user_model()
 
 
-class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
+class UserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     lookup_field = "username"
@@ -21,4 +21,12 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     @action(detail=False, methods=["GET"])
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+        return APIResponse.success(data=serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        mixin_response = super().retrieve(request, *args, **kwargs)
+        return APIResponse.success(data=mixin_response.data)
+
+    def update(self, request, *args, **kwargs):
+        mixin_response = super().update(request, *args, **kwargs)
+        return APIResponse.success(data=mixin_response.data)

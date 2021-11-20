@@ -6,19 +6,21 @@ from facegram.users.models import User
 pytestmark = pytest.mark.django_db
 
 
-def test_detail(user: User):
-    assert (
-        reverse("users:detail", kwargs={"username": user.username})
-        == f"/users/{user.username}/"
-    )
-    assert resolve(f"/users/{user.username}/").view_name == "users:detail"
+class TestUsersUrls:
+    user_app_name: str = 'users_api'
+    base_url: str = "/api/auth/user/"
 
+    def test_user_me(self):
+        api_endpoint: str = self.base_url + "me/"
+        path_name: str = self.user_app_name + ":user-me"
 
-def test_update():
-    assert reverse("users:update") == "/users/~update/"
-    assert resolve("/users/~update/").view_name == "users:update"
+        assert reverse(path_name) == api_endpoint
+        assert resolve(api_endpoint).view_name == path_name
 
+    def test_user_detail(self, user: User):
+        api_endpoint: str = self.base_url + str(user.username) + "/"
+        path_name: str = self.user_app_name + ":user-detail"
 
-def test_redirect():
-    assert reverse("users:redirect") == "/users/~redirect/"
-    assert resolve("/users/~redirect/").view_name == "users:redirect"
+        assert reverse(path_name, kwargs={"username": user.username}) == api_endpoint
+        assert resolve(api_endpoint).view_name == path_name
+

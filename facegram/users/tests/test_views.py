@@ -1,101 +1,60 @@
 import pytest
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.messages.middleware import MessageMiddleware
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.http import HttpRequest
-from django.test import RequestFactory
-from django.urls import reverse
+from rest_framework.test import APIClient
+from rest_framework.response import Response
+from facegram.utils.fgtesting.response import TestAPIResponse
 
-from facegram.users.forms import UserChangeForm
+
 from facegram.users.models import User
-from facegram.users.tests.factories import UserFactory
-from facegram.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from faker import Faker
 
 pytestmark = pytest.mark.django_db
 
 
-class TestUserUpdateView:
-    """
-    TODO:
-        extracting view initialization code as class-scoped fixture
-        would be great if only pytest-django supported non-function-scoped
-        fixture db access -- this is a work-in-progress for now:
-        https://github.com/pytest-dev/pytest-django/pull/258
-    """
+class TestUserManagement:
+    base_endpoint = '/api/auth/user/'
+    user_details_url = base_endpoint + 'me/'
 
-    def dummy_get_response(self, request: HttpRequest):
-        return None
+    def test_get_user_details_unauthenticated(self, api_client: APIClient):
+        response: Response = api_client.get(self.user_details_url)
+        assert response.status_code == 401
 
-    def test_get_success_url(self, user: User, rf: RequestFactory):
-        view = UserUpdateView()
-        request = rf.get("/fake-url/")
-        request.user = user
-
-        view.request = request
-
-        assert view.get_success_url() == f"/users/{user.username}/"
-
-    def test_get_object(self, user: User, rf: RequestFactory):
-        view = UserUpdateView()
-        request = rf.get("/fake-url/")
-        request.user = user
-
-        view.request = request
-
-        assert view.get_object() == user
-
-    def test_form_valid(self, user: User, rf: RequestFactory):
-        view = UserUpdateView()
-        request = rf.get("/fake-url/")
-
-        # Add the session/message middleware to the request
-        SessionMiddleware(self.dummy_get_response).process_request(request)
-        MessageMiddleware(self.dummy_get_response).process_request(request)
-        request.user = user
-
-        view.request = request
-
-        # Initialize the form
-        form = UserChangeForm()
-        form.cleaned_data = []
-        view.form_valid(form)
-
-        messages_sent = [m.message for m in messages.get_messages(request)]
-        assert messages_sent == ["Information successfully updated"]
-
-
-class TestUserRedirectView:
-    def test_get_redirect_url(self, user: User, rf: RequestFactory):
-        view = UserRedirectView()
-        request = rf.get("/fake-url")
-        request.user = user
-
-        view.request = request
-
-        assert view.get_redirect_url() == f"/users/{user.username}/"
-
-
-class TestUserDetailView:
-    def test_authenticated(self, user: User, rf: RequestFactory):
-        request = rf.get("/fake-url/")
-        request.user = UserFactory()
-
-        response = user_detail_view(request, username=user.username)
-
+    
+    def test_get_user_details_authenticated(self, user: User, authenticated_client: APIClient, test_response: TestAPIResponse):
+        expected_response = {
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "id": user.id,
+        }
+        response: Response = authenticated_client.get(self.user_details_url)
         assert response.status_code == 200
+        assert response.data == test_response.success(data=expected_response)
 
-    def test_not_authenticated(self, user: User, rf: RequestFactory):
-        request = rf.get("/fake-url/")
-        request.user = AnonymousUser()
 
-        response = user_detail_view(request, username=user.username)
-        login_url = reverse(settings.LOGIN_URL)
+    def test_update_user_details_authenticated(self, user: User, authenticated_client: APIClient, test_response: TestAPIResponse):
+        new_user = Faker()
 
-        assert response.status_code == 302
-        assert response.url == f"{login_url}?next=/fake-url/"
+        data = {
+            "first_name": new_user.first_name(),
+            "last_name": new_user.last_name(),
+            "username": new_user.user_name(),
+        }
+        patch_user_url = self.base_endpoint + str(user.username) + '/'
+        response: Response = authenticated_client.patch(patch_user_url, data=data)
+        assert response.status_code == 200
+        data["id"] = user.id
+        data["email"] = user.email
+        assert response.data == test_response.success(data=data)
+
+
+    def test_email_update_not_allowed(self, user: User, authenticated_client: APIClient):
+        new_email = Faker().email()
+
+        data = {
+            "email": new_email
+        }
+        patch_user_url = self.base_endpoint + str(user.username) + '/'
+        response: Response = authenticated_client.patch(patch_user_url, data=data)
+        assert response.status_code == 200
+        assert response.data["data"]["email"] == user.email

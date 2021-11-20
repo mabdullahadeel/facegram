@@ -70,15 +70,8 @@ THIRD_PARTY_APPS = [
     # -------- #
     "rest_framework",
     "rest_framework.authtoken",
-    "dj_rest_auth",
     "corsheaders",
-    # -------- #
-    "allauth",
-    "allauth.account",
-    "dj_rest_auth.registration",
-    # -------- #
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.github",
+    "rest_framework_simplejwt"
 ]
 
 LOCAL_APPS = [
@@ -101,12 +94,11 @@ MIGRATION_MODULES = {"sites": "facegram.contrib.sites.migrations"}
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+# LOGIN_REDIRECT_URL = "api:users_api:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
@@ -289,20 +281,6 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-# django-allauth
-# ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "facegram.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "facegram.users.adapters.SocialAccountAdapter"
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 
 # API versioning
@@ -323,28 +301,13 @@ SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
     SOCIAL_AUTH_GITHUB_CALLBACK
 ]
 
-
-# Social Authentication Settiing for All Auth
-SOCIALACCOUNT_QUERY_EMAIL = True
-SOCIALACCOUNT_PROVIDERS = {
-    'github': {
-        'APP': {
-            'client_id': SOCIAL_AUTH_GITHUB_KEY,
-            'secret': SOCIAL_AUTH_GITHUB_SECRET,
-        }
-    }
-}
-
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         "rest_framework.authentication.SessionAuthentication",
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # "rest_framework.authentication.TokenAuthentication",
-        # "allauth.account.auth_backends.AuthenticationBackend",
     ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -352,28 +315,14 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-   "AUTH_HEADER_TYPES": ('JWT','Bearer'),
+    "AUTH_HEADER_TYPES": ('JWT','Bearer'),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=120),
-    # "AUTH_TOKEN_CLASSES": (
-    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    # )
 }
-
+FG_JWT_AUTH = {
+    'FG_JWT_ACCESS_KEY': 'token',
+    'FG_JWT_REFRESH_KEY': 'refresh_token',
+}
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
-]
-# DJ_REST_AUTH
-
-REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "facegram.users.api.serializers.UserSerializer"
-}
-
-REST_SESSION_LOGIN = False
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = "token"
-JWT_AUTH_REFRESH_COOKIE = "refresh_token"
-# JWT_AUTH_SECURE = True
