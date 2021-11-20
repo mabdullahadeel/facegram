@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.http.request import HttpRequest
 from rest_framework import serializers
 from facegram.posts.models import Post, PostComment, PostVotes, PostCommentVotes
 from facegram.users.api.serializers import UserPostSerializer
@@ -34,6 +36,16 @@ class PostCommentSerializerV1(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ('created_at', 'updated_at', 'id', 'uuid', 'post', 'commenter', 'total_likes')
 
+    def create(self, validated_data):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        post = self.context.get('post')
+        validated_data['post'] = post
+        validated_data['commenter'] = user
+        return PostComment.objects.create(**validated_data)
+
 
 class PostVoteSerializerV1(serializers.ModelSerializer):
     class Meta:
@@ -56,5 +68,21 @@ class PostVoteSerializerV1(serializers.ModelSerializer):
 class PostCommentVoteSerializerV1(serializers.ModelSerializer):
     class Meta:
         model = PostCommentVotes
-        fields = ('total_likes',)
+        fields = ('reaction',)
         read_only_fields = ('created_at', 'last_modified', 'id', 'post_comment', 'voter')
+
+
+    def create(self, validated_data):
+        user = None
+        request: HttpRequest = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        
+        try:
+            post_comment = PostComment.objects.get(id=request.GET.get('comment_id', None))
+        except PostComment.DoesNotExist:
+            raise ValidationError('Post comment does not exist')
+
+        validated_data['comment_voter'] = user
+        validated_data['post_comment'] = post_comment
+        return PostCommentVotes.objects.create(**validated_data)

@@ -97,4 +97,4 @@ class PostCommentVotes(models.Model):
     
     
         def __str__(self):
-            return f"{self.post_comment.id}-{self.voter.username}"
+            return f"{self.post_comment.id}-{self.comment_voter.username}"
